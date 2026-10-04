@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第九章 · 落幕纪念 | CHAPTER IX MEMORIAL</title>
+<meta name="description" content="Phigros 4.0.1 第九章主线落幕与 Solivault 解谜谢幕纪念站 —— 曲绘、收藏品、音乐、音效全量档案。致谢解谜三群。">
+<link rel="stylesheet" href="assets/css/style.css">
+<!-- GUGUGU~ -->
+</head>
+<body data-boot="pending">
+
+<!-- ══════════ 氛围层 ══════════ -->
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="grain" aria-hidden="true"></div>
+<div id="scrollbar-progress" aria-hidden="true"></div>
+<div id="cursor-glow" aria-hidden="true"></div>
+
+<!-- ══════════ SATURN TERMINAL 开机 ══════════ -->
+<div id="boot" role="dialog" aria-label="启动终端">
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="crt" aria-hidden="true"></div>
+  <div class="boot-frame">
+    <div class="boot-titlebar mono">
+      <span class="bt-dot"></span>
+      <span class="bt-name">SATURN TERMINAL — tty0</span>
+      <span class="bt-clock mono" id="boot-clock">--:--:--</span>
+    </div>
+    <pre id="boot-log" class="mono"></pre>
+    <div class="boot-promptline mono"><span class="bp-user">saturn@phigros</span><span class="bp-sep">:</span><span class="bp-path">~</span><span class="bp-dollar">$</span> <span id="boot-tail"></span><span class="cursor" id="boot-cursor">█</span></div>
+    <div class="boot-skip mono">CLICK / ANY KEY — SKIP</div>
+  </div>
+</div>
+
+<!-- ══════════ 导航 ══════════ -->
+<header id="nav">
+  <a class="nav-brand" href="#hero"><span class="brand-mark mono">Ⅸ</span><span class="brand-text">落幕纪念<em>CHAPTER&nbsp;IX&nbsp;MEMORIAL</em></span></a>
+  <nav class="nav-links mono">
+    <a href="#decrypt" data-nav="decrypt">解谜</a>
+    <a href="#gallery" data-nav="gallery">曲绘</a>
+    <a href="#collections" data-nav="collections">收藏品</a>
+    <a href="#music" data-nav="music">音乐</a>
+    <a href="#sfx" data-nav="sfx">音效</a>
+    <a href="#credits" data-nav="credits">致谢</a>
+  </nav>
+  <a class="nav-zip mono magnetic" href="assets/zip/Chapter9_Music_Full_WAV.zip"><span>全集打包 ↓</span></a>
+</header>
+
+<main>
+<!-- ══════════ HERO ══════════ -->
+<section id="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <p class="hero-kicker mono">PHIGROS 4.0.1 · MAIN STORY ARCHIVE</p>
+    <h1 class="hero-title" id="shard-title" aria-label="第九章"></h1>
+    <p class="hero-sub serif reveal">穹顶孤舟 · 终幕纪念</p>
+    <div class="hero-stats reveal" id="hero-stats">
+      <div class="stat"><b data-count="12">0</b><span>曲绘原图</span></div>
+      <div class="stat"><b data-count="503">0</b><span>收藏品档案</span></div>
+      <div class="stat"><b data-count="12">0</b><span>完整音轨</span></div>
+      <div class="stat"><b data-count="52">0</b><span>原版音效</span></div>
+    </div>
+    <div class="hero-cta reveal">
+      <a class="btn primary magnetic" href="#decrypt"><span>回到解谜现场</span></a>
+      <a class="btn ghost magnetic" href="#gallery"><span>进入档案馆</span></a>
+    </div>
+  </div>
+  <div class="scroll-cue mono" aria-hidden="true">SCROLL<span></span></div>
+</section>
+
+<!-- ══════════ 解谜全记录 ══════════ -->
+<section id="decrypt" class="sec page decrypt-section">
+  <div class="decrypt-story" id="decrypt-story">
+    <div class="decrypt-stage">
+      <header class="sec-head decrypt-heading">
+        <p class="sec-kicker mono">ARG ARCHIVE // DECRYPTION RECORD</p>
+        <h2 class="sec-title serif">解谜记录</h2>
+        <p class="sec-desc">解谜三群 · 第九章解谜记录</p>
+      </header>
+      <div class="decrypt-progress" aria-hidden="true"><i id="decrypt-progress-fill"></i></div>
+      <div class="stage-flash" aria-hidden="true"></div>
+    <article class="decrypt-beat beat-source" data-beat="0">
+      <div class="beat-index mono">01</div><div class="beat-copy"><p class="beat-label mono">SOURCE // CLIENT CODE</p><h3>源码中的图像</h3></div>
+      <figure class="evidence-frame"><img src="assets/img/decrypt/01-source.png" alt="解谜整理稿中的源码线索原图" loading="lazy"><figcaption>源码中发现的图像</figcaption></figure>
+    </article>
+    <article class="decrypt-beat beat-fourier" data-beat="1">
+      <div class="beat-index mono">02</div><div class="beat-copy"><p class="beat-label mono">FOURIER TRANSFORM // FFT</p><h3>频域显影</h3></div>
+      <figure class="evidence-frame fft-original"><img src="assets/img/decrypt/02-fourier-result.png" alt="整理稿中的傅里叶变换结果原图，显出 Outside_the_birdcage" loading="eager"><span class="fx-scan" aria-hidden="true"></span><span class="fx-noise" aria-hidden="true"></span><span class="fx-ring" aria-hidden="true"></span><figcaption class="mono">Outside_the_birdcage → /outside_the_birdcage/</figcaption></figure>
+    </article>
+    <article class="decrypt-beat beat-fragments" data-beat="2">
+      <div class="beat-index mono">03</div><div class="beat-copy"><p class="beat-label mono">13 FRAGMENTS // COMMUNITY ASSEMBLY</p><h3>碎片归位</h3></div>
+      <div class="fragment-board mono" aria-label="13 段碎片排列过程"><div class="board-head"><span>IGNORANCE</span><span>DISPOSSESSION</span></div><div class="fragment-grid"><i style="--n:0">?aT?~!4*jK^D</i><i style="--n:1">S6&amp;Dj#f=6T+I</i><i style="--n:2">IV7aN2emf9nS</i><i style="--n:3">GFToCYqyuH8P</i><i style="--n:4">NF9etodigrAO</i><i style="--n:5">OU/@ig=!9~VS</i><i style="--n:6">R#m6Aya#N=$S</i><i style="--n:7">ALessK0@Mt=mE</i><i style="--n:8">N2riNdAuY-US</i><i style="--n:9">C4_tubAxU+/S</i><i style="--n:10">E&amp;rJaM\9-_I</i><i style="--n:11">u-D4wBeN31_O</i><i style="--n:12">1SR&amp;fuH6AbuN</i></div><div class="board-foot">末尾字母排序 · 13 fragments assembled</div></div>
+    </article>
+    <article class="decrypt-beat beat-read" data-beat="3">
+      <div class="beat-index mono">04</div><div class="beat-copy"><p class="beat-label mono">CLOCKWISE // YELLOW CELLS</p><h3>顺时针读取</h3></div>
+      <div class="assembled-phrase mono" aria-label="Cogito, ubi sit refugium"><span>COGITO</span><i>,</i> <span>UBI</span> <span>SIT</span> <span>REFUGIUM</span></div>
+    </article>
+    <article class="decrypt-beat beat-zero-width" data-beat="4">
+      <div class="beat-index mono">05</div><div class="beat-copy"><p class="beat-label mono">ZERO-WIDTH // MORSE</p><h3>不可见字符 → 摩斯</h3></div>
+      <div class="text-equation mono"><div class="equation-copy">Technology can expand the boundaries of humanity,<br>it can also fabricate the semblance of reality.</div><div class="zero-run" aria-label="源码中的零宽字符"><i>U+200B</i><i>U+200C</i><i>U+200B</i><i>U+200D</i><i>U+200B</i><i>U+200C</i></div><div class="morse-result">—·· / ·· / ··· / ——— / ·—· / ·· / · / —· / — / ·— / — / ·· / ——— / —·</div><strong>DISORIENTATION</strong></div>
+    </article>
+    <article class="decrypt-beat beat-nihilist" data-beat="5">
+      <div class="beat-index mono">06</div><div class="beat-copy"><p class="beat-label mono">NIHILIST CIPHER // JUSTENGAGEWTH</p><h3>移除干扰项</h3></div>
+      <div class="nihilist-grid mono"><div>AROUSAL → AROUSL · 密钥坐标循环</div><div class="cipher-meta">56 75 65 76 35 56 75 63 97 66 67 47 72</div><div class="key-row">31 32 53 43 12 14　↻</div><div class="square-5x5" aria-label="五乘五密码方阵"><span>P</span><span>S</span><span>Z</span><span>L</span><span>M</span><span>Y</span><span>Q</span><span>E</span><span>B</span><span>J</span><span>A</span><span>R</span><span>T</span><span>F</span><span>C</span><span>H</span><span>N</span><span>U</span><span>G</span><span>V</span><span>K</span><span>D</span><span>O</span><span>X</span><span>W</span></div><div class="nihilist-calc" id="nihilist-operations" aria-label="密文减去循环密钥，坐标查回字母"></div></div>
+    </article>
+    <article class="decrypt-beat beat-fence" data-beat="6">
+      <div class="beat-index mono">07</div><div class="beat-copy"><p class="beat-label mono">FENCE // ZIGZAG READ</p><h3>之字形读取</h3></div>
+      <div class="fence-board mono"><div class="fence-hint">FENCE?　/　\\/\\/\\/</div><div class="fence-rails"><span>NO-　　try for yourself</span><span>　\\　　　/\\</span><span>　　L2re@etiKdA3!ig9t~UmSO</span><i class="fx-head" aria-hidden="true"></i></div><div class="zigzag">╱╲╱╲╱╲╱╲╱╲╱╲╱</div><div class="final-phrase">NOL2re@etiKdA3!ig9t~UmSO</div></div>
+    </article>
+      <div class="decrypt-stage-footer mono"><span id="decrypt-stage-index">01 / 07</span><span>SCROLL TO CONTINUE</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 曲绘回廊 ══════════ -->
+<section id="gallery" class="sec page">
+  <header class="sec-head">
+    <p class="sec-kicker mono reveal">ARCHIVE 01 // ILLUSTRATIONS</p>
+    <h2 class="sec-title serif reveal">曲绘回廊</h2>
+    <p class="sec-desc reveal">十二幅 2048×1080 曲绘原图，自客户端纹理逐字节导出。<br>赏阅、随曲同听，或携原图与音乐一并归去。</p>
+    <div class="sec-tools reveal">
+      <a class="btn small magnetic" href="assets/zip/Chapter9_曲绘全集_2048px_PNG.zip"><span>打包全部曲绘 · 30 MB</span></a>
+    </div>
+  </header>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</section>
+
+<!-- ══════════ 收藏品档案馆 ══════════ -->
+<section id="collections" class="sec page">
+  <header class="sec-head">
+    <p class="sec-kicker mono reveal">ARCHIVE 02 // COLLECTIONS</p>
+    <h2 class="sec-title serif reveal">收藏品档案馆</h2>
+    <p class="sec-desc reveal">演绎原画与 503 条收藏品档案全录 —— 每一页都是这场旅途的证词。</p>
+  </header>
+  <div class="tabs mono reveal" id="coll-tabs">
+    <button class="tab active" data-tab="art">剧情原画 · 19</button>
+    <button class="tab" data-tab="archive">档案全录 · 503</button>
+  </div>
+
+  <div class="tab-pane active" id="pane-art">
+    <div class="story-grid" id="story-grid"></div>
+    <div class="pane-foot reveal">
+      <a class="btn small magnetic" href="assets/zip/Chapter9_剧情原画集_PNG.zip"><span>打包剧情原画 · 52 MB</span></a>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="pane-archive">
+    <div class="archive-tools">
+      <input id="archive-search" class="mono" type="search" placeholder="检索档案…（标题 / 正文 / 主管）" autocomplete="off">
+      <div class="chip-row" id="archive-chips"></div>
+      <p class="mono archive-count" id="archive-count"></p>
+    </div>
+    <div class="archive-list" id="archive-list"></div>
+    <div class="archive-more-wrap"><button id="archive-more" class="btn ghost small magnetic"><span>加载更多档案</span></button></div>
+  </div>
+</section>
+
+<!-- ══════════ 音乐厅 ══════════ -->
+<section id="music" class="sec page">
+  <header class="sec-head">
+    <p class="sec-kicker mono reveal">ARCHIVE 03 // MUSIC</p>
+    <h2 class="sec-title serif reveal">音乐厅</h2>
+    <p class="sec-desc reveal">十二章完整音轨。在线聆听走 AAC 256k 高音质流，下载则奉上未压缩 WAV 原档。</p>
+  </header>
+
+  <div class="music-archive" id="music-archive" aria-label="音乐收藏夹">
+    <div class="archive-slot-head"><span class="mono">PERSONAL ARCHIVE</span><b>收藏</b><span id="archive-slot-count">0 / 12</span></div>
+    <div id="archive-slot" class="archive-slot" aria-label="收藏曲目"></div>
+  </div>
+  <div class="batch-panel reveal">
+    <div class="batch-head">
+      <h3 class="serif">批量下载</h3>
+      <p class="mono">BATCH DOWNLOAD // 一键带走全部声音</p>
+    </div>
+    <div class="batch-grid">
+      <a class="batch-card magnetic" href="assets/zip/Chapter9_Music_Full_WAV.zip">
+        <b>WAV 原档全集</b><i class="mono">12 首 · 无损 · 319 MB</i><span class="mono batch-go">下载 ↓</span>
+      </a>
+      <a class="batch-card magnetic" href="assets/zip/Chapter9_Music_AAC256.zip">
+        <b>AAC 256k 全集</b><i class="mono">12 首 · 高音质便携 · 57 MB</i><span class="mono batch-go">下载 ↓</span>
+      </a>
+      <a class="batch-card magnetic" href="assets/zip/Chapter9_曲绘全集_2048px_PNG.zip">
+        <b>曲绘全集</b><i class="mono">12 幅 · PNG 原图 · 30 MB</i><span class="mono batch-go">下载 ↓</span>
+      </a>
+      <a class="batch-card magnetic" href="assets/zip/Chapter9_音效全集_原版WAV.zip">
+        <b>音效全集</b><i class="mono">52 条 · 原版 WAV · 128 MB</i><span class="mono batch-go">下载 ↓</span>
+      </a>
+    </div>
+  </div>
+
+  <ol class="track-list" id="track-list"></ol>
+</section>
+
+<!-- ══════════ 音效实验室 ══════════ -->
+<section id="sfx" class="sec page">
+  <header class="sec-head">
+    <p class="sec-kicker mono reveal">ARCHIVE 04 // SOUND FX</p>
+    <h2 class="sec-title serif reveal">音效实验室</h2>
+    <p class="sec-desc reveal">52 条客户端音效，原版提取、未做任何处理。<br>点击即试听 —— 就是游戏里那一声。</p>
+    <div class="sec-tools reveal">
+      <button class="btn small magnetic" id="sfx-random"><span>随机来一发 ⚂</span></button>
+      <a class="btn small magnetic" href="assets/zip/Chapter9_音效全集_原版WAV.zip"><span>打包全部音效 · 128 MB</span></a>
+    </div>
+  </header>
+  <div id="sfx-groups"></div>
+</section>
+
+<!-- ══════════ 谢幕 · 致谢 ══════════ -->
+<section id="credits" class="sec page">
+  <header class="sec-head">
+    <p class="sec-kicker mono reveal">FINALE // CREDITS</p>
+    <h2 class="sec-title serif reveal">谢幕与致谢</h2>
+  </header>
+
+  <div class="thanks-wall reveal">
+    <p class="thanks-lead serif">感谢<span class="thanks-hl">解谜三群</span>的每一位</p>
+    <div class="role-chips mono">
+      <span>密码学担当</span><span>逆向分析</span><span>音频提取</span><span>剧情考据</span>
+      <span>网页复现</span><span>线索搬运</span><span>深夜查岗</span><span>欢呼气氛组</span>
+    </div>
+    <p class="thanks-note">名字太多，不如都写进这行字里：<br><b>「是我们一起，把这扇门推开的。」</b></p>
+  </div>
+
+  <div class="marquee mono" aria-hidden="true">
+    <div class="marquee-track" id="marquee-track">
+      <span>WER JETZT ALLEIN IST, WIRD ES LANGE BLEIBEN</span><i>✦</i>
+      <span>致谢解谜三群</span><i>✦</i>
+      <span>SOLIVAULT · UNLOCKED</span><i>✦</i>
+      <span>CHAPTER IX · FIN</span><i>✦</i>
+    </div>
+  </div>
+
+  <div class="reading-list reveal">
+    <h3 class="serif">解谜与剧情 · 完整复盘</h3>
+    <div class="reading-grid">
+      <a href="https://blog.wmc.pub/posts/phi9-solivault-walkthrough/" target="_blank" rel="noopener"><b>Solivault 网页解谜全纪录</b><span class="mono">从密文到倒计时</span></a>
+      <a href="https://blog.wmc.pub/posts/phi9-solivault-finale/" target="_blank" rel="noopener"><b>解谜终幕</b><span class="mono">最后的攻坚</span></a>
+      <a href="https://blog.wmc.pub/posts/phi9-chapter9-story/" target="_blank" rel="noopener"><b>第九章剧情全解</b><span class="mono">叙事与伏笔</span></a>
+      <a href="https://blog.wmc.pub/posts/phi9-chapter9-client-internals/" target="_blank" rel="noopener"><b>客户端逆向全解</b><span class="mono">从启动到退出</span></a>
+      <a href="https://blog.wmc.pub/posts/phi9-chapter9-assets/" target="_blank" rel="noopener"><b>资源解包报告</b><span class="mono">纹理 · 音频 · 视频</span></a>
+      <a href="https://blog.wmc.pub/posts/phi9-solivault-song-sstv/" target="_blank" rel="noopener"><b>SSTV 歌声之谜</b><span class="mono">慢扫描电视信号</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer id="footer">
+  <p class="mono footer-line">CHAPTER IX MEMORIAL — A FAN-MADE ARCHIVE</p>
+  <p class="footer-note">非官方纪念站点 · 全部素材提取自 Phigros 4.0.1 客户端，仅供纪念与学习<br>曲绘 / 音乐 / 文本版权归原作者与 Pigeon Games 所有</p>
+  <p class="mono footer-sign">773.A.P.</p>
+</footer>
+
+<!-- ══════════ 图片灯箱 ══════════ -->
+<div id="lightbox" class="modal" role="dialog" aria-modal="true">
+  <button class="modal-close mono" data-close>ESC ✕</button>
+  <button class="lb-nav prev mono" aria-label="上一张">‹</button>
+  <figure class="lb-stage">
+    <img id="lb-img" alt="">
+    <figcaption class="lb-meta">
+      <b id="lb-title"></b><span id="lb-sub" class="mono"></span>
+      <a id="lb-dl" class="btn small"><span>下载原图 ↓</span></a>
+    </figcaption>
+  </figure>
+  <button class="lb-nav next mono" aria-label="下一张">›</button>
+</div>
+
+<!-- ══════════ 档案阅读器 ══════════ -->
+<div id="reader" class="modal" role="dialog" aria-modal="true">
+  <div class="reader-card">
+    <button class="modal-close mono" data-close>ESC ✕</button>
+    <header class="reader-head">
+      <p class="mono reader-file" id="reader-file"></p>
+      <h3 class="serif" id="reader-title"></h3>
+      <p class="mono reader-meta" id="reader-meta"></p>
+    </header>
+    <div class="reader-body" id="reader-body"></div>
+    <footer class="reader-foot mono">— PHIGROS COLLECTION ARCHIVE · EXTRACTED VERBATIM —</footer>
+  </div>
+</div>
+
+<!-- ══════════ 播放器 ══════════ -->
+<div id="player" aria-hidden="true">
+  <canvas id="viz"></canvas>
+  <div class="player-inner">
+    <img id="p-cover" alt="" class="p-cover">
+    <div class="p-info">
+      <b id="p-title">—</b>
+      <span id="p-sub" class="mono">—</span>
+    </div>
+    <div class="p-seek" id="p-seek"><i class="p-seek-buf" id="p-buf"></i><i id="p-seek-fill"></i></div>
+    <span class="p-time mono"><b id="p-cur">0:00</b> / <b id="p-dur">0:00</b></span>
+    <div class="p-btns">
+      <button id="p-prev" class="pbtn mono" aria-label="上一首">⏮</button>
+      <button id="p-toggle" class="pbtn big mono" aria-label="播放/暂停">▶</button>
+      <button id="p-next" class="pbtn mono" aria-label="下一首">⏭</button>
+    </div>
+    <a id="p-dl" class="pbtn mono" title="下载当前曲目 WAV" download>↓ WAV</a>
+    <button id="p-close" class="pbtn mono" aria-label="收起播放器">✕</button>
+  </div>
+</div>
+
+<audio id="main-audio" preload="none"></audio>
+
+<script src="assets/js/data-songs.js"></script>
+<script src="assets/js/data-story.js"></script>
+<script src="assets/js/data-sfx.js"></script>
+<script src="assets/js/data-collections.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
