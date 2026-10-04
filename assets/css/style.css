@@ -149,3 +149,13 @@ main{position:relative;z-index:2}.sec{width:min(1320px,94vw);margin:8vh auto;pad
 @keyframes idx-tick{0%{opacity:0;transform:translateY(7px)}100%{opacity:1;transform:none}}
 
 @media(max-width:850px){#decrypt .decrypt-beat::before{font-size:clamp(160px,58vw,300px);right:-4vw;opacity:calc(var(--reveal,0)*.4)}#decrypt .fft-original .fx-scan{left:2%;right:2%}}
+
+/* ══════════════ 浏览器内打包 · button 适配与进度状态 ══════════════ */
+button.batch-card{font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%}
+button.nav-zip{font:inherit;cursor:pointer;background:none}
+button.btn{font:inherit;cursor:pointer}
+[data-pack]{-webkit-tap-highlight-color:transparent}
+[data-pack].packing{opacity:.72;pointer-events:none}
+[data-pack].packing .batch-go,[data-pack].packing span{animation:pack-pulse 1s ease-in-out infinite}
+[data-pack].pack-error{border-color:#d98383aa!important}
+@keyframes pack-pulse{50%{opacity:.45}}

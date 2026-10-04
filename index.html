@@ -44,7 +44,7 @@
     <a href="#sfx" data-nav="sfx">音效</a>
     <a href="#credits" data-nav="credits">致谢</a>
   </nav>
-  <a class="nav-zip mono magnetic" href="assets/zip/Chapter9_Music_Full_WAV.zip"><span>全集打包 ↓</span></a>
+  <button class="nav-zip mono magnetic" type="button" data-pack="wav"><span>全集打包 ↓</span></button>
 </header>
 
 <main>
@@ -120,7 +120,7 @@
     <h2 class="sec-title serif reveal">曲绘回廊</h2>
     <p class="sec-desc reveal">十二幅 2048×1080 曲绘原图，自客户端纹理逐字节导出。<br>赏阅、随曲同听，或携原图与音乐一并归去。</p>
     <div class="sec-tools reveal">
-      <a class="btn small magnetic" href="assets/zip/Chapter9_曲绘全集_2048px_PNG.zip"><span>打包全部曲绘 · 30 MB</span></a>
+      <button class="btn small magnetic" type="button" data-pack="art"><span>打包全部曲绘 · 30 MB</span></button>
     </div>
   </header>
   <div class="gallery-grid" id="gallery-grid"></div>
@@ -141,7 +141,7 @@
   <div class="tab-pane active" id="pane-art">
     <div class="story-grid" id="story-grid"></div>
     <div class="pane-foot reveal">
-      <a class="btn small magnetic" href="assets/zip/Chapter9_剧情原画集_PNG.zip"><span>打包剧情原画 · 52 MB</span></a>
+      <button class="btn small magnetic" type="button" data-pack="story"><span>打包剧情原画 · 52 MB</span></button>
     </div>
   </div>
 
@@ -174,17 +174,17 @@
       <p class="mono">BATCH DOWNLOAD // 一键带走全部声音</p>
     </div>
     <div class="batch-grid">
-      <a class="batch-card magnetic" href="assets/zip/Chapter9_Music_Full_WAV.zip">
-        <b>WAV 原档全集</b><i class="mono">12 首 · 无损 · 319 MB</i><span class="mono batch-go">下载 ↓</span>
+      <button class="batch-card magnetic" type="button" data-pack="wav">
+        <b>WAV 原档全集</b><i class="mono">12 首 · 无损 · 333 MB</i><span class="mono batch-go">下载 ↓</span>
       </a>
-      <a class="batch-card magnetic" href="assets/zip/Chapter9_Music_AAC256.zip">
+      <button class="batch-card magnetic" type="button" data-pack="aac">
         <b>AAC 256k 全集</b><i class="mono">12 首 · 高音质便携 · 57 MB</i><span class="mono batch-go">下载 ↓</span>
       </a>
-      <a class="batch-card magnetic" href="assets/zip/Chapter9_曲绘全集_2048px_PNG.zip">
+      <button class="batch-card magnetic" type="button" data-pack="art">
         <b>曲绘全集</b><i class="mono">12 幅 · PNG 原图 · 30 MB</i><span class="mono batch-go">下载 ↓</span>
       </a>
-      <a class="batch-card magnetic" href="assets/zip/Chapter9_音效全集_原版WAV.zip">
-        <b>音效全集</b><i class="mono">52 条 · 原版 WAV · 128 MB</i><span class="mono batch-go">下载 ↓</span>
+      <button class="batch-card magnetic" type="button" data-pack="sfx">
+        <b>音效全集</b><i class="mono">52 条 · 原版 WAV · 139 MB</i><span class="mono batch-go">下载 ↓</span>
       </a>
     </div>
   </div>
@@ -200,7 +200,7 @@
     <p class="sec-desc reveal">52 条客户端音效，原版提取、未做任何处理。<br>点击即试听 —— 就是游戏里那一声。</p>
     <div class="sec-tools reveal">
       <button class="btn small magnetic" id="sfx-random"><span>随机来一发 ⚂</span></button>
-      <a class="btn small magnetic" href="assets/zip/Chapter9_音效全集_原版WAV.zip"><span>打包全部音效 · 128 MB</span></a>
+      <button class="btn small magnetic" type="button" data-pack="sfx"><span>打包全部音效 · 139 MB</span></button>
     </div>
   </header>
   <div id="sfx-groups"></div>

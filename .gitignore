@@ -1,8 +1,5 @@
 # macOS
 .DS_Store
 
-# 超过 GitHub 100MB 单文件上限的大型打包，不入库；部署时请单独上传到服务器对应路径：
-#   assets/zip/Chapter9_Music_Full_WAV.zip     (319 MB)
-#   assets/zip/Chapter9_音效全集_原版WAV.zip     (127 MB)
-assets/zip/Chapter9_Music_Full_WAV.zip
-assets/zip/Chapter9_音效全集_原版WAV.zip
+# 打包已改为浏览器内现场生成（见 main.js batchPacker），静态 ZIP 不再入库
+assets/zip/

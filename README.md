@@ -10,7 +10,7 @@
 | **解谜记录** | 固定舞台 + 滚动驱动的七幕解谜全记录：源码图 → 傅里叶显影 → 13 段碎片归位 → 顺时针读取 → 零宽字符/Morse → Nihilist 方阵 → 栅栏之字读取 |
 | **曲绘回廊** | 12 幅 2048×1080 曲绘原图，灯箱赏阅、随曲同听、原图下载 |
 | **收藏品档案馆** | 诗笺、剧情原画与档案条目 |
-| **音乐厅** | 12 章完整音轨在线试听、单曲下载、批量打包、**收藏槽**（拖拽 / 点击 / 键盘皆可收纳与取出，localStorage 持久化）、**实时频谱**（AnalyserNode 读取真实音频信号） |
+| **音乐厅** | 12 章完整音轨在线试听、单曲下载、**浏览器内现场打包**批量下载（零依赖 ZIP 写入器，与原版逐字节一致）、**收藏槽**（拖拽 / 点击 / 键盘皆可收纳与取出，localStorage 持久化）、**实时频谱**（AnalyserNode 读取真实音频信号） |
 | **音效实验室** | 52 条客户端原版音效，点击即试听 |
 
 ## 本地运行
@@ -27,15 +27,11 @@ python3 -m http.server 8000
 
 ## 部署
 
-任意静态托管即可（GitHub Pages / Vercel / 自建 Nginx 均可）。
+任意静态托管即可（GitHub Pages / Vercel / 自建 Nginx 均可），**无需预置任何 ZIP 文件**。
 
-**注意**：两个超过 GitHub 100MB 单文件上限的打包已被 `.gitignore` 排除，部署后请手动上传到服务器对应路径，页面里的批量下载卡片才会生效：
+所有"打包下载"均为**浏览器内现场打包**：点击后页面实时抓取仓库内的原始文件，用内置的零依赖 ZIP 写入器（STORE 直存 + CRC32 + UTF-8 文件名）在本地生成并下载，进度直接显示在卡片上。已通过与原版 ZIP 的逐文件 CRC32 比对验证内容完全一致（并顺带修正了原版中 `ハテ` 等中日文件名的编码乱码）。
 
-```bash
-# 在本机原目录找到这两个文件，直接 scp 到部署机同路径即可
-scp assets/zip/Chapter9_Music_Full_WAV.zip   user@server:/path/to/site/assets/zip/
-scp assets/zip/Chapter9_音效全集_原版WAV.zip  user@server:/path/to/site/assets/zip/
-```
+注意：`file://` 直开时浏览器禁止 fetch 本地资源，打包按钮不可用（音乐播放不受影响）；通过 HTTP 访问即可。
 
 GitHub Pages 方式：Settings → Pages → Deploy from branch → `main` / root。
 

@@ -480,6 +480,124 @@ addEventListener("keydown", e => {
   });
 })();
 
+/* ─────────── 浏览器内打包：零依赖 ZIP 写入器（STORE 直存 · CRC32 · UTF-8 文件名） ─────────── */
+(function batchPacker() {
+  const CRC_TABLE = (() => {
+    const t = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) { let c = i; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[i] = c; }
+    return t;
+  })();
+  function crc32(view) {
+    let crc = -1;
+    for (let i = 0; i < view.length; i++) crc = CRC_TABLE[(crc ^ view[i]) & 255] ^ (crc >>> 8);
+    return (crc ^ -1) >>> 0;
+  }
+  function buildZip(entries) {
+    const now = new Date();
+    const time = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >>> 1);
+    const date = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+    const enc = new TextEncoder();
+    const parts = [], central = [];
+    let offset = 0;
+    for (const e of entries) {
+      const name = enc.encode(e.name);
+      const size = e.data.byteLength;
+      const lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true);   // local file header signature
+      lh.setUint16(4, 20, true);            // version needed
+      lh.setUint16(6, 0x0800, true);        // flags: UTF-8 filename (ハテ 等)
+      lh.setUint16(8, 0, true);             // method: STORE
+      lh.setUint16(10, time, true); lh.setUint16(12, date, true);
+      lh.setUint32(14, e.crc, true);
+      lh.setUint32(18, size, true); lh.setUint32(22, size, true);
+      lh.setUint16(26, name.length, true);
+      parts.push(new Uint8Array(lh.buffer), name, new Uint8Array(e.data));
+      const ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true);     // central directory signature
+      ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+      ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+      ch.setUint16(12, time, true); ch.setUint16(14, date, true);
+      ch.setUint32(16, e.crc, true);
+      ch.setUint32(20, size, true); ch.setUint32(24, size, true);
+      ch.setUint16(28, name.length, true);
+      ch.setUint32(38, 0, true);             // external attrs
+      ch.setUint32(42, offset, true);        // local header offset
+      central.push(new Uint8Array(ch.buffer), name);
+      offset += 30 + name.length + size;
+    }
+    let cdSize = 0;
+    for (const c of central) cdSize += c.byteLength;
+    const eocd = new DataView(new ArrayBuffer(22));
+    eocd.setUint32(0, 0x06054b50, true);    // end of central directory
+    eocd.setUint16(8, entries.length, true); eocd.setUint16(10, entries.length, true);
+    eocd.setUint32(12, cdSize, true); eocd.setUint32(16, offset, true);
+    return new Blob([...parts, ...central, new Uint8Array(eocd.buffer)], { type: "application/zip" });
+  }
+  const basename = p => p.split("/").pop();
+  const PACKS = {
+    wav: { name: "Chapter9_Music_Full_WAV.zip", files: () => window.PHI9_SONGS.map(s => s.wav) },
+    aac: { name: "Chapter9_Music_AAC256.zip", files: () => window.PHI9_SONGS.map(s => s.m4a) },
+    art: { name: "Chapter9_曲绘全集_2048px_PNG.zip", files: () => window.PHI9_SONGS.map(s => s.art) },
+    sfx: { name: "Chapter9_音效全集_原版WAV.zip", files: () => window.PHI9_SFX.items.map(i => i.file) },
+    story: { name: "Chapter9_剧情原画集_PNG.zip", files: () => [
+      ...window.PHI9_STORY.map(x => x.img),
+      "assets/img/story/ILLUS_AboutTheUniverse.SOTUIMIssionary.0_2048x1080.png",
+      "assets/img/story/ILLUS_Ametrine.GRYSCLMIssionary.0_2048x1080.png",
+      "assets/img/story/ILLUS_DesultorySignals.technoplanet.0_2048x1080.png",
+      "assets/img/story/ILLUS_EntrancetotheChaos.打打だいずvssiromaru.0_2048x1080.png",
+      "assets/img/story/ILLUS_Evanescent.LeaF.0_2048x1080.png",
+      "assets/img/story/ILLUS_ExoplanetaryMirage.かめりあ.0_2048x1080.png",
+      "assets/img/story/ILLUS_Implexrough.Silentroommommy.0_2048x1080.png",
+      "assets/img/story/ILLUS_Message.くるぶっこちゃん.0_2048x1080.png",
+      "assets/img/story/ILLUS_Petrichor.voidMournfinale.0_2048x1080.png",
+      "assets/img/story/ILLUS_TrueHomeTrueWorldRework.816ThreeNumbers.0_2048x1080.png",
+      "assets/img/story/ILLUS_ハテ.rNFrums.0_2048x1080.png"
+    ] }
+  };
+  const running = new Set();
+  async function run(btn) {
+    const pack = PACKS[btn.dataset.pack];
+    if (!pack || running.has(btn)) return;
+    running.add(btn);
+    btn.classList.add("packing");
+    const status = btn.querySelector(".batch-go") || btn.querySelector("span");
+    const original = status ? status.textContent : "";
+    try {
+      if (location.protocol === "file:") throw new Error("file:// 无法读取打包资源，请通过 HTTP 访问");
+      const files = pack.files();
+      const entries = [];
+      let loaded = 0;
+      for (let i = 0; i < files.length; i++) {
+        const res = await fetch(files[i]);
+        if (!res.ok) throw new Error(`${files[i]} → HTTP ${res.status}`);
+        const data = await res.arrayBuffer();
+        loaded += data.byteLength;
+        entries.push({ name: basename(files[i]), data, crc: crc32(new Uint8Array(data)) });
+        if (status) status.textContent = `获取 ${i + 1}/${files.length} · ${(loaded / 1048576).toFixed(1)} MB`;
+      }
+      if (status) status.textContent = "打包中 …";
+      await new Promise(r => requestAnimationFrame(() => r()));
+      const blob = buildZip(entries);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = pack.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      if (status) status.textContent = `完成 · ${(blob.size / 1048576).toFixed(0)} MB ↓`;
+    } catch (err) {
+      console.error("Pack failed:", err);
+      btn.classList.add("pack-error");
+      if (status) status.textContent = "打包失败 · 请重试";
+    } finally {
+      btn.classList.remove("packing");
+      running.delete(btn);
+      if (status && original && !btn.classList.contains("pack-error")) setTimeout(() => { status.textContent = original; }, 5000);
+      setTimeout(() => btn.classList.remove("pack-error"), 3000);
+    }
+  }
+  $$("[data-pack]").forEach(b => b.addEventListener("click", () => run(b)));
+})();
+
 /* ─────────── 收藏品档案馆 ─────────── */
 (function collections() {
   // 选项卡
