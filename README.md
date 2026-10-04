@@ -27,11 +27,13 @@ python3 -m http.server 8000
 
 ## 部署
 
-任意静态托管即可（GitHub Pages / Vercel / 自建 Nginx 均可），**无需预置任何 ZIP 文件**。
+任意静态托管即可（GitHub Pages / Vercel / **Cloudflare Pages** / 自建 Nginx 均可），**无需预置任何 ZIP 文件**。
+
+**大文件分片**：为绕过静态托管的单文件上限（Cloudflare Pages 为 25MiB），超过 24MiB 的音频原档在仓库中以 20MiB 分片存放在 `assets/chunks/`，清单为 `assets/js/data-chunks.js`。浏览器下载/打包/音效试听时自动抓取分片、拼接、CRC32 校验后原样还原，已通过 SHA-256 与原档逐字节比对验证。如需重新分片：`python3 tools/make_chunks.py`。
 
 所有"打包下载"均为**浏览器内现场打包**：点击后页面实时抓取仓库内的原始文件，用内置的零依赖 ZIP 写入器（STORE 直存 + CRC32 + UTF-8 文件名）在本地生成并下载，进度直接显示在卡片上。已通过与原版 ZIP 的逐文件 CRC32 比对验证内容完全一致（并顺带修正了原版中 `ハテ` 等中日文件名的编码乱码）。
 
-注意：`file://` 直开时浏览器禁止 fetch 本地资源，打包按钮不可用（音乐播放不受影响）；通过 HTTP 访问即可。
+注意：`file://` 直开时浏览器禁止 fetch 本地资源，打包/下载按钮不可用（音乐播放不受影响）；通过 HTTP 访问即可。
 
 GitHub Pages 方式：Settings → Pages → Deploy from branch → `main` / root。
 

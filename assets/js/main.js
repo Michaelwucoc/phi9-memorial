@@ -223,7 +223,7 @@ const Player = (function () {
   function ui() {
     const s = list[cur]; if (!s) return;
     $("#p-cover").src = s.art; $("#p-title").textContent = s.title; $("#p-sub").textContent = s.composer;
-    $("#p-dl").href = s.wav; $("#p-dur").textContent = fmtT(s.duration);
+    $("#p-dur").textContent = fmtT(s.duration);
     $$(".track").forEach(t => t.classList.toggle("playing", +t.dataset.i === cur));
     $$(".art-play").forEach(b => { const on = +b.dataset.i === cur; b.classList.toggle("playing", on); b.textContent = on && !au.paused ? "❚❚" : "▶"; });
     document.title = (au.paused ? "" : "♪ ") + s.title + " — 第九章 · 落幕纪念";
@@ -264,6 +264,23 @@ const Player = (function () {
   au.addEventListener("progress", () => { if (!au.duration || !au.buffered.length) return; const end = au.buffered.end(au.buffered.length - 1); $("#p-buf").style.width = `${Math.min(100, end / au.duration * 100)}%`; });
   $("#p-seek").addEventListener("click", e => { if (!au.duration) return; const r = e.currentTarget.getBoundingClientRect(); au.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * au.duration; });
   $("#p-toggle").addEventListener("click", () => cur < 0 ? play(0) : au.paused ? play(cur) : au.pause());
+  $("#p-dl").addEventListener("click", async e => {
+    e.preventDefault();
+    const s = list[cur];
+    if (!s) return;
+    const btn = e.currentTarget, original = btn.textContent;
+    btn.disabled = true; btn.textContent = "…";
+    try {
+      const { data } = await window.__phi9FetchFile(s.wav, (pi, pn) => { btn.textContent = `${pi}/${pn}`; });
+      const url = URL.createObjectURL(new Blob([data], { type: "audio/wav" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = s.wav.split("/").pop();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      btn.textContent = "✓";
+    } catch (err) { console.error("WAV download failed:", err); btn.textContent = "!"; }
+    finally { btn.disabled = false; setTimeout(() => { btn.textContent = original; }, 2200); }
+  });
   $("#p-prev").addEventListener("click", () => play((cur - 1 + list.length) % list.length));
   $("#p-next").addEventListener("click", () => play((cur + 1) % list.length));
   $("#p-close").addEventListener("click", () => { au.pause(); bar.classList.remove("on"); });
@@ -280,13 +297,28 @@ function playSfx(chip, file) {
   if (sfxChip === chip) { stopSfx(); return; }
   stopSfx();
   $("#main-audio").pause();
-  sfxAu = new Audio(encodeURI(file));
   sfxChip = chip; chip.classList.add("playing");
-  $(".sfx-btn", chip).textContent = "❚❚";
-  const wave = $(".sfx-wave", chip);
-  sfxAu.addEventListener("timeupdate", () => { if (sfxAu && sfxAu.duration) wave.style.width = (sfxAu.currentTime / sfxAu.duration * 100) + "%"; });
-  sfxAu.addEventListener("ended", stopSfx);
-  sfxAu.play().catch(stopSfx);
+  const btn = $(".sfx-btn", chip);
+  const start = () => {
+    sfxAu = new Audio(encodeURI(file));
+    btn.textContent = "❚❚";
+    const wave = $(".sfx-wave", chip);
+    sfxAu.addEventListener("timeupdate", () => { if (sfxAu && sfxAu.duration) wave.style.width = (sfxAu.currentTime / sfxAu.duration * 100) + "%"; });
+    sfxAu.addEventListener("ended", stopSfx);
+    sfxAu.play().catch(stopSfx);
+  };
+  if ((window.PHI9_CHUNKS || {})[file]) {
+    btn.textContent = "…";
+    window.__phi9FetchFile(file).then(({ url }) => {
+      if (sfxChip !== chip) return;
+      sfxAu = new Audio(url);
+      sfxAu.addEventListener("ended", () => { URL.revokeObjectURL(url); stopSfx(); });
+      btn.textContent = "❚❚";
+      const wave = $(".sfx-wave", chip);
+      sfxAu.addEventListener("timeupdate", () => { if (sfxAu && sfxAu.duration) wave.style.width = (sfxAu.currentTime / sfxAu.duration * 100) + "%"; });
+      sfxAu.play().catch(() => { URL.revokeObjectURL(url); stopSfx(); });
+    }).catch(err => { console.error(err); stopSfx(); });
+  } else start();
 }
 
 /* ─────────── 灯箱 ─────────── */
@@ -465,7 +497,7 @@ addEventListener("keydown", e => {
       <span class="t-acts">
         <button class="t-btn play" data-i="${i}">▶ 试听</button>
         <button class="t-btn store" type="button" aria-label="收纳 ${s.title}">＋</button>
-        <a class="t-btn" href="${s.wav}" download>WAV</a>
+        <button class="t-btn" type="button" data-wav="${i}" aria-label="下载 ${s.title} WAV 原档">WAV</button>
         <a class="t-btn" href="${s.m4a}" download>AAC</a>
       </span>`;
     li.querySelector(".t-btn.play").addEventListener("click", () => Player.play(i));
@@ -534,6 +566,34 @@ addEventListener("keydown", e => {
     return new Blob([...parts, ...central, new Uint8Array(eocd.buffer)], { type: "application/zip" });
   }
   const basename = p => p.split("/").pop();
+  const CHUNKS = window.PHI9_CHUNKS || {};
+  async function fetchFile(path, onPart) {
+    const meta = CHUNKS[path];
+    if (!meta) {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error(`${path} → HTTP ${res.status}`);
+      return { data: await res.arrayBuffer(), crc: null };
+    }
+    const buf = new Uint8Array(meta.size);
+    let got = 0;
+    for (let i = 0; i < meta.parts.length; i++) {
+      const res = await fetch(meta.parts[i]);
+      if (!res.ok) throw new Error(`${meta.parts[i]} → HTTP ${res.status}`);
+      const part = new Uint8Array(await res.arrayBuffer());
+      buf.set(part, got); got += part.byteLength;
+      if (onPart) onPart(i + 1, meta.parts.length);
+    }
+    if (got !== meta.size) throw new Error(`${path} 分片拼接大小不符`);
+    const crc = crc32(buf);
+    if (crc !== meta.crc) throw new Error(`${path} 分片 CRC 校验失败`);
+    return { data: buf.buffer, crc };
+  }
+  const MIME = { wav: "audio/wav", m4a: "audio/mp4", png: "image/png", jpg: "image/jpeg" };
+  window.__phi9FetchFile = async (path, onPart) => {
+    const { data } = await fetchFile(path, onPart);
+    const type = MIME[path.split(".").pop()] || "application/octet-stream";
+    return { data, url: URL.createObjectURL(new Blob([data], { type })) };
+  };
   const PACKS = {
     wav: { name: "Chapter9_Music_Full_WAV.zip", files: () => window.PHI9_SONGS.map(s => s.wav) },
     aac: { name: "Chapter9_Music_AAC256.zip", files: () => window.PHI9_SONGS.map(s => s.m4a) },
@@ -568,11 +628,12 @@ addEventListener("keydown", e => {
       const entries = [];
       let loaded = 0;
       for (let i = 0; i < files.length; i++) {
-        const res = await fetch(files[i]);
-        if (!res.ok) throw new Error(`${files[i]} → HTTP ${res.status}`);
-        const data = await res.arrayBuffer();
+        const name = basename(files[i]);
+        const { data, crc } = await fetchFile(files[i], (pi, pn) => {
+          if (status) status.textContent = `获取 ${i + 1}/${files.length} · ${name} 分片 ${pi}/${pn}`;
+        });
         loaded += data.byteLength;
-        entries.push({ name: basename(files[i]), data, crc: crc32(new Uint8Array(data)) });
+        entries.push({ name, data, crc: crc ?? crc32(new Uint8Array(data)) });
         if (status) status.textContent = `获取 ${i + 1}/${files.length} · ${(loaded / 1048576).toFixed(1)} MB`;
       }
       if (status) status.textContent = "打包中 …";
@@ -596,6 +657,22 @@ addEventListener("keydown", e => {
     }
   }
   $$("[data-pack]").forEach(b => b.addEventListener("click", () => run(b)));
+  $$("[data-wav]").forEach(btn => btn.addEventListener("click", async () => {
+    const s = window.PHI9_SONGS[+btn.dataset.wav];
+    if (!s || btn.disabled) return;
+    const original = btn.textContent;
+    btn.disabled = true; btn.textContent = "…";
+    try {
+      const { data } = await fetchFile(s.wav, (pi, pn) => { btn.textContent = `${pi}/${pn}`; });
+      const url = URL.createObjectURL(new Blob([data], { type: "audio/wav" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = basename(s.wav);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      btn.textContent = "✓";
+    } catch (err) { console.error("WAV download failed:", err); btn.textContent = "!"; }
+    finally { btn.disabled = false; setTimeout(() => { btn.textContent = original; }, 2200); }
+  }));
 })();
 
 /* ─────────── 收藏品档案馆 ─────────── */
@@ -710,6 +787,20 @@ addEventListener("keydown", e => {
         <a class="sfx-dl" href="${encodeURI(x.file)}" download title="下载">↓</a>
         <i class="sfx-wave"></i>`;
       chip.querySelector(".sfx-btn").addEventListener("click", () => playSfx(chip, x.file));
+      chip.querySelector(".sfx-dl").addEventListener("click", e => {
+        if (!(window.PHI9_CHUNKS || {})[x.file]) return; // 非分片走原生下载
+        e.preventDefault();
+        const a = e.currentTarget, original = a.textContent;
+        a.textContent = "…";
+        window.__phi9FetchFile(x.file, (pi, pn) => { a.textContent = `${pi}/${pn}`; }).then(({ url }) => {
+          const d = document.createElement("a");
+          d.href = url; d.download = x.file.split("/").pop();
+          document.body.appendChild(d); d.click(); d.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 60000);
+          a.textContent = "✓";
+        }).catch(err => { console.error("SFX download failed:", err); a.textContent = "!"; })
+          .finally(() => setTimeout(() => { a.textContent = original; }, 2200));
+      });
       chip.dataset.file = x.file;
       grid.appendChild(chip);
       chipsAll.push(chip);
